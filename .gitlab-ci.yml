@@ -1,0 +1,15 @@
+run_tests:
+    stage: test
+    image: node:20
+    before_script:
+        - npm install
+    script:
+        - npm run dev & echo $! > ./pidfile
+        - npm test
+        - kill $(cat ./pidfile) && rm ./pidfile
+    only:
+        - master
+
+include:
+    - template: AWS/Deploy-ECS.gitlab-ci.yml
+    
