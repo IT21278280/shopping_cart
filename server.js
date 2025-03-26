@@ -46,6 +46,10 @@ app.listen(PORT, () => {
   console.log(`🚀 Server is running on PORT: ${PORT}`);
 });
 
+console.log("🚀 Starting server...");
+console.log("🔍 Checking environment variables...");
+console.log("MONGODB_URL:", process.env.MONGODB_URL);
+console.log("PORT:", process.env.PORT);
 
 
 
