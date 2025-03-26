@@ -1,23 +1,17 @@
-const express = require("express");
+require("dotenv").config();  // Ensure .env variables are loaded first
+console.log("🔍 Checking environment variables...");
+console.log("MONGODB_URL:", process.env.MONGODB_URL || "❌ Not found");
+console.log("PORT:", process.env.PORT || "❌ Not found");
+
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const dotenv = require("dotenv");
 
-const app = express();
-dotenv.config();
+// Ensure MONGODB_URL is correctly set before connecting
+if (!process.env.MONGODB_URL) {
+  console.error("❌ MONGODB_URL is not set. Check Railway environment variables.");
+  process.exit(1);
+}
 
-// Middleware
-app.use(express.json());
-app.use(cors());
-app.use(bodyParser.json());
-
-const PORT = process.env.PORT || 8000;
-const MONGO_URI = process.env.MONGODB_URL;
-
-// MongoDB Connection with Error Handling
-mongoose.set("strictQuery", true);
-mongoose.connect(MONGO_URI, {
+mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -26,30 +20,6 @@ mongoose.connect(MONGO_URI, {
   console.error("❌ MongoDB Connection Failed:", err.message);
   process.exit(1);
 });
-
-// Base Route
-app.get("/", (req, res) => {
-  res.send("The shopping cart microservice is up and running!");
-});
-
-// Import Routes
-const ShoppingCartRouter = require("./routes/shoppingcart.js");
-const CouponRouter = require("./routes/coupon.js");
-const WishListRouter = require("./routes/wishlist.js");
-
-app.use("/shoppingcart", ShoppingCartRouter);
-app.use("/coupon", CouponRouter);
-app.use("/wishlist", WishListRouter);
-
-// Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on PORT: ${PORT}`);
-});
-
-console.log("🚀 Starting server...");
-console.log("🔍 Checking environment variables...");
-console.log("MONGODB_URL:", process.env.MONGODB_URL);
-console.log("PORT:", process.env.PORT);
 
 
 
